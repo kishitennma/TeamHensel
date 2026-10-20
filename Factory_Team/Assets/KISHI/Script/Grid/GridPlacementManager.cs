@@ -21,10 +21,13 @@ public class GridPlacementManager : MonoBehaviour
         preview.SetRotation(rotation);
     }
 
+
+
     private void Update()
     {
         if (preview == null)
             return;
+
 
         UpdatePreview();
 
@@ -41,20 +44,29 @@ public class GridPlacementManager : MonoBehaviour
             CancelPlacement();
     }
 
+
+
     private void UpdatePreview()
     {
-        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(
-            Input.mousePosition);
+        Vector3 mousePosition = Input.mousePosition;
 
+        // カメラから、施設が存在する平面までの距離
+        mousePosition.z = Mathf.Abs(Camera.main.transform.position.z);
+
+        Vector3 mouseWorld = GetMouseWorldPosition();
         Vector3Int cell = grid.WorldToCell(mouseWorld);
+
         Vector2Int origin = new(cell.x, cell.y);
+
+        Vector3 cellCenter = grid.GetCellCenterWorld(cell);
+
+
 
         preview.transform.position =
             grid.GetCellCenterWorld(cell);
 
         bool canPlace = CanPlace(preview, origin);
 
-        // 仮実装：設置可能なら緑、不可なら赤
         foreach (var sr in preview.GetComponentsInChildren<SpriteRenderer>())
             sr.color = canPlace
                 ? new Color(0.5f, 1f, 0.5f, 0.5f)
@@ -83,8 +95,7 @@ public class GridPlacementManager : MonoBehaviour
 
     private void TryPlace()
     {
-        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(
-            Input.mousePosition);
+        Vector3 mouseWorld = GetMouseWorldPosition();
 
         Vector3Int cell = grid.WorldToCell(mouseWorld);
         Vector2Int origin = new(cell.x, cell.y);
@@ -120,5 +131,18 @@ public class GridPlacementManager : MonoBehaviour
     {
         Destroy(preview.gameObject);
         preview = null;
+    }
+
+    private Vector3 GetMouseWorldPosition()
+    {
+        Camera cam = Camera.main;
+
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.forward, Vector3.zero);
+
+        if (plane.Raycast(ray, out float distance))
+            return ray.GetPoint(distance);
+
+        return Vector3.zero;
     }
 }
