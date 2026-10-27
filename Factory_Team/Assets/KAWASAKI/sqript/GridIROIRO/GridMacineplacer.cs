@@ -13,9 +13,13 @@ public class GridMacineplacer : MonoBehaviour
     [SerializeField]
     private List<GameObject> machinePrefabs = new List<GameObject>();
 
-    // すでに機械を配置したマスを記録する
-    private HashSet<Vector3Int> occupiedCells =
-        new HashSet<Vector3Int>();
+
+    // 配置済みのマスと機械を記録
+    private Dictionary<Vector3Int, GameObject> placedMachines =
+        new Dictionary<Vector3Int, GameObject>();
+
+    // 配置モードか撤去モードか
+    private bool isRemovalMode = false;
 
     private Camera mainCamera;
 
@@ -57,9 +61,33 @@ public class GridMacineplacer : MonoBehaviour
 
             }
 
-            PlaceMachine();
+            if (isRemovalMode)
+            {
+                RemoveMachine();
+            }
+            else
+            {
+                PlaceMachine();
+            }
 
         }
+    }
+
+    // 配置モード
+    public void SetPlacementMode()
+    {
+        isRemovalMode = false;
+
+        Debug.Log("配置モードに切り替えました。");
+    }
+
+    //撤去モード
+    public void SetRemovalMode()
+    {
+        isRemovalMode = true;
+        selectedPrefab = null;
+
+        Debug.Log("撤去モードに切り替えました。");
     }
 
     public void SelectMachine(int prefabIndex)
@@ -77,8 +105,32 @@ public class GridMacineplacer : MonoBehaviour
         {
             return;
         }
-
+        isRemovalMode = false;
         Debug.Log($"機械:{selectedPrefab.name}");
+    }
+
+    // 機械を撤去
+    private void RemoveMachine()
+    {
+        // クリックしたマスを取得
+        Vector3Int cellPosition = GetMouseCellPosition();
+
+        // そのマスに機械がなければ終了
+        if (!placedMachines.TryGetValue(
+            cellPosition, out GameObject machine))
+        {
+            Debug.Log("このマスには機械がありません。");
+            return;
+        }
+
+        // 機械を削除
+        Destroy(machine);
+
+        // 配置記録を削除
+        placedMachines.Remove(cellPosition);
+
+        Debug.Log($"機械を撤去しました: {cellPosition}");
+
     }
 
 
@@ -101,26 +153,42 @@ public class GridMacineplacer : MonoBehaviour
         //クリックしたマスを取得
         Vector3Int cellPosition = gridSystem.WorldToCell(worldPosition);
 
-        //現時点では１マス占有
-        if(occupiedCells.Contains(cellPosition))
+        // すでに機械がある場合は配置しない
+        if (placedMachines.ContainsKey(cellPosition))
         {
             Debug.Log("このマスには配置できません");
+            return;
         }
 
         //マスの中心位置を取得
         Vector3 spawPosition = gridSystem.CellToWorldCenter(cellPosition);
 
         //選択中のPrefabを生成
-        Instantiate(
+        GameObject newMachine = Instantiate(
             selectedPrefab,
             spawPosition,
             Quaternion.identity
             );
 
         //使用済みのマスとして記録
-        occupiedCells.Add(cellPosition);
-
+        placedMachines.Add(cellPosition, newMachine);
         Debug.Log(
         $"{selectedPrefab.name}を配置しました: {cellPosition}");
     }
+
+    // マウス位置からグリッドのマスを取得
+    private Vector3Int GetMouseCellPosition()
+    {
+        Vector3 mousePosition = Input.mousePosition;
+
+        // Z=0の平面までの距離
+        mousePosition.z = -mainCamera.transform.position.z;
+
+        // スクリーン座標をワールド座標に変換
+        Vector3 worldPosition =
+            mainCamera.ScreenToWorldPoint(mousePosition);
+
+        return gridSystem.WorldToCell(worldPosition);
+    }
+
 }
