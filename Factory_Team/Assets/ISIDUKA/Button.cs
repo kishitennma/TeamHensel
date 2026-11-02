@@ -16,32 +16,34 @@ public class Button : MonoBehaviour
 
     public void Rail_Panel()
     {
-        rail_panel.SetActive(!rail_panel.activeSelf);
-        production_panel.SetActive(!production_panel.activeSelf);
-        processing_panel.SetActive(!processing_panel.activeSelf);
-        synthesis_panel.SetActive(!synthesis_panel.activeSelf);
+        rail_panel.SetActive(true);
+
+        production_panel.SetActive(false);
+        processing_panel.SetActive(false);
+        synthesis_panel.SetActive(false);
     }
     public void Production_Panel()
     {
-        rail_panel.SetActive(!rail_panel.activeSelf);
-        production_panel.SetActive(!production_panel.activeSelf);
-        processing_panel.SetActive(!processing_panel.activeSelf);
-        synthesis_panel.SetActive(!synthesis_panel.activeSelf);
+        production_panel.SetActive(true);
 
-
+        rail_panel.SetActive(false);
+        processing_panel.SetActive(false);
+        synthesis_panel.SetActive(false);
     }
     public void Processing_Panel()
     {
-        rail_panel.SetActive(!rail_panel.activeSelf);
-        production_panel.SetActive(!production_panel.activeSelf);
-        processing_panel.SetActive(!processing_panel.activeSelf);
-        synthesis_panel.SetActive(!synthesis_panel.activeSelf);
+        processing_panel.SetActive(true);
+
+        rail_panel.SetActive(false);
+        production_panel.SetActive(false);
+        synthesis_panel.SetActive(false);
     }
     public void Synthesis_Panel()
     {
-        rail_panel.SetActive(!rail_panel.activeSelf);
-        production_panel.SetActive(!production_panel.activeSelf);
-        processing_panel.SetActive(!processing_panel.activeSelf);
-        synthesis_panel.SetActive(!synthesis_panel.activeSelf);
+        synthesis_panel.SetActive(true);
+
+        rail_panel.SetActive(false);
+        production_panel.SetActive(false);
+        processing_panel.SetActive(false);
     }
 }

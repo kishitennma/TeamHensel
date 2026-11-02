@@ -605,7 +605,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1339051946}
         m_TargetAssemblyTypeName: Button, Assembly-CSharp
-        m_MethodName: Rail_Panel
+        m_MethodName: Processing_Panel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -991,7 +991,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &254358452
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2499,6 +2499,7 @@ GameObject:
   - component: {fileID: 931575878}
   - component: {fileID: 931575882}
   - component: {fileID: 931575881}
+  - component: {fileID: 931575883}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2641,6 +2642,21 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &931575883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931575877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c456b60d3f62a640b61a067b4cd4dd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomSpeed: 5
+  minZoom: 3
+  maxZoom: 15
 --- !u!1 &967981617
 GameObject:
   m_ObjectHideFlags: 0
@@ -3277,8 +3293,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -283, y: 0.0000027418}
-  m_SizeDelta: {x: 121.79, y: 93.68}
+  m_AnchoredPosition: {x: -279, y: 6.975}
+  m_SizeDelta: {x: 96.22, y: 79.73}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1080781997
 MonoBehaviour:
@@ -5166,7 +5182,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1339051946}
         m_TargetAssemblyTypeName: Button, Assembly-CSharp
-        m_MethodName: Rail_Panel
+        m_MethodName: Synthesis_Panel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6054,7 +6070,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1339051946}
         m_TargetAssemblyTypeName: Button, Assembly-CSharp
-        m_MethodName: Rail_Panel
+        m_MethodName: Production_Panel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
