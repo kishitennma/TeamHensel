@@ -15,7 +15,7 @@ public class MaterialRecipe
 
 public class MaterialProcessing : MonoBehaviour
 {
-    [SerializeField] private TextAsset recipeCsv;
+    [SerializeField] private TextAsset recipe_csv;
 
     private readonly Dictionary<string, MaterialRecipe> recipes =
     new Dictionary<string, MaterialRecipe>(
@@ -31,7 +31,7 @@ public class MaterialProcessing : MonoBehaviour
     {
         recipes.Clear();    //“o˜^‚³‚ê‚Ä‚¢‚éƒŒƒVƒs‚Ìíœ
 
-        if (recipeCsv == null)
+        if (recipe_csv == null)
         {
             Debug.LogError(
                 "MaterialConverter: CSV‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB"
@@ -39,7 +39,7 @@ public class MaterialProcessing : MonoBehaviour
             return;
         }
 
-        string[] lines = recipeCsv.text.Split(
+        string[] lines = recipe_csv.text.Split(
             new[] { "\r\n", "\n", "\r" },
              StringSplitOptions.RemoveEmptyEntries);
 

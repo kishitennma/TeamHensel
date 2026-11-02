@@ -1,33 +1,67 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
+
 public class GridMacineplacer : MonoBehaviour
 {
     [Header("配置に必要な設定")]
-    [SerializeField] private GridSystem gridSystem;
+    [SerializeField] private GridSystem grid_system;
 
     //選択しているPrefab
-    private GameObject selectedPrefab;
+    private GameObject selected_prefab;
 
     [Header("配置できる機械")]
     [SerializeField]
-    private List<GameObject> machinePrefabs = new List<GameObject>();
+    private List<GameObject> machine_prefabs = new List<GameObject>();
 
 
     // 配置済みのマスと機械を記録
-    private Dictionary<Vector3Int, GameObject> placedMachines =
+    private Dictionary<Vector3Int, GameObject> placed_machines =
         new Dictionary<Vector3Int, GameObject>();
 
     // 配置モードか撤去モードか
     private bool isRemovalMode = false;
 
-    private Camera mainCamera;
+    private Camera main_camera;
+
+
+    // 移動中の機械
+    private GameObject moving_machine;
+
+    // 移動前のマス
+    private Vector3Int original_cell;
+
+    // ドラッグ中かどうか
+    private bool isDragging = false;
+
+    // 機械ごとの左下の配置マスを記録
+    private Dictionary<GameObject, Vector3Int> machine_start_cells =
+        new Dictionary<GameObject, Vector3Int>();
+
+    // ドラッグ開始時のクリック位置と機械の左下の差
+    private Vector3Int drag_cell_offset;
+
+    //MachineBaseを取得
+    private MachineBaseTest GetMachineBase(GameObject machine)
+    {
+        MachineBaseTest machineBase = machine.GetComponent<MachineBaseTest>();
+
+        if (machineBase == null)
+        {
+            Debug.LogError(
+                $"{machine.name} に MachineBase がありません。"
+            );
+        }
+
+        return machineBase;
+    }
 
     private void Awake()
     {
-        mainCamera = Camera.main;
+        main_camera = Camera.main;
 
-        if (mainCamera == null)
+        if (main_camera == null)
         {
             Debug.LogError(
                 "MainCameraタグのカメラが見つかりません。"
@@ -37,7 +71,7 @@ public class GridMacineplacer : MonoBehaviour
 
     private void Update()
     {
-        if (mainCamera == null ||gridSystem == null )
+        if (main_camera == null ||grid_system == null )
         {
             return;
         }
@@ -45,7 +79,7 @@ public class GridMacineplacer : MonoBehaviour
         // 右クリックで選択解除
         if (Input.GetMouseButtonDown(1))
         {
-            selectedPrefab = null;
+            selected_prefab = null;
             Debug.Log("選択解除");
             return;
         }
@@ -67,9 +101,30 @@ public class GridMacineplacer : MonoBehaviour
             }
             else
             {
-                PlaceMachine();
-            }
+                Vector3Int cell = GetMouseCellPosition();
 
+                // 既存機械があればドラッグ
+                if (placed_machines.ContainsKey(cell))
+                {
+                    StartDragging();
+                }
+                // 空いていれば選択中の機械を配置
+                else if (selected_prefab != null)
+                {
+                    PlaceMachine();
+                }
+            }
+        }
+        // ドラッグ中
+        if (isDragging)
+        {
+            UpdateDragging();
+
+            // 左クリックを離した
+            if (Input.GetMouseButtonUp(0))
+            {
+                EndDragging();
+            }
         }
     }
 
@@ -85,49 +140,52 @@ public class GridMacineplacer : MonoBehaviour
     public void SetRemovalMode()
     {
         isRemovalMode = true;
-        selectedPrefab = null;
+        selected_prefab = null;
 
         Debug.Log("撤去モードに切り替えました。");
     }
 
     public void SelectMachine(int prefabIndex)
     {
-        if (prefabIndex < 0 || prefabIndex >= machinePrefabs.Count)
+        if (prefabIndex < 0 || prefabIndex >= machine_prefabs.Count)
         {
             Debug.LogWarning("機械の番号が正しくありません。");
             return;
         }
 
-        selectedPrefab = machinePrefabs[prefabIndex];
+        selected_prefab = machine_prefabs[prefabIndex];
 
         //機械の選択の解除
-        if (selectedPrefab == null)
+        if (selected_prefab == null)
         {
             return;
         }
         isRemovalMode = false;
-        Debug.Log($"機械:{selectedPrefab.name}");
+        Debug.Log($"機械:{selected_prefab.name}");
     }
 
     // 機械を撤去
     private void RemoveMachine()
     {
+
         // クリックしたマスを取得
         Vector3Int cellPosition = GetMouseCellPosition();
 
-        // そのマスに機械がなければ終了
-        if (!placedMachines.TryGetValue(
-            cellPosition, out GameObject machine))
+        if (!placed_machines.TryGetValue(
+              cellPosition, out GameObject machine))
         {
-            Debug.Log("このマスには機械がありません。");
+            Debug.Log("このマスには機械がありません");
             return;
         }
+
+        // すべての占有マスを解放
+        UnregisterMachine(machine);
 
         // 機械を削除
         Destroy(machine);
 
         // 配置記録を削除
-        placedMachines.Remove(cellPosition);
+        placed_machines.Remove(cellPosition);
 
         Debug.Log($"機械を撤去しました: {cellPosition}");
 
@@ -136,44 +194,65 @@ public class GridMacineplacer : MonoBehaviour
 
     private void PlaceMachine()
     {
-        if(selectedPrefab==null)
+        if (selected_prefab == null)
         {
             return;
         }
 
-        //マウスの画面座標を取得
-        Vector3 mousePosition = Input.mousePosition;
+        // MachineBaseTestからサイズを取得
+        MachineBaseTest machineBase = GetMachineBase(selected_prefab);
 
-        //カメラから平面までの距離
-        mousePosition.z=-mainCamera.transform.position.z;
-
-        //画面座標をワールド座標に変換
-        Vector3 worldPosition = mainCamera.ScreenToWorldPoint(mousePosition);
-
-        //クリックしたマスを取得
-        Vector3Int cellPosition = gridSystem.WorldToCell(worldPosition);
-
-        // すでに機械がある場合は配置しない
-        if (placedMachines.ContainsKey(cellPosition))
+        if (machineBase == null)
         {
-            Debug.Log("このマスには配置できません");
             return;
         }
 
-        //マスの中心位置を取得
-        Vector3 spawPosition = gridSystem.CellToWorldCenter(cellPosition);
+        int width = machineBase.Width;
+        int height = machineBase.Height;
 
-        //選択中のPrefabを生成
+        // クリックしたマスを取得
+        Vector3Int cellPosition = GetMouseCellPosition();
+
+        // 配置予定の全マスを確認
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Vector3Int checkCell = cellPosition
+                    + new Vector3Int(x, y, 0);
+
+                if (placed_machines.ContainsKey(checkCell))
+                {
+                    Debug.Log("この範囲には配置できません");
+                    return;
+                }
+            }
+        }
+
+        // 機械の中心位置を計算
+        Vector3 spawnPosition =
+            grid_system.CellToWorldCenter(cellPosition);
+
+        spawnPosition += new Vector3(
+            (width - 1) * 0.5f,
+            (height - 1) * 0.5f,
+            0
+        );
+
+        // 機械を生成
         GameObject newMachine = Instantiate(
-            selectedPrefab,
-            spawPosition,
+            selected_prefab,
+            spawnPosition,
             Quaternion.identity
-            );
+        );
 
-        //使用済みのマスとして記録
-        placedMachines.Add(cellPosition, newMachine);
+        // 占有マスと配置位置を登録
+        RegisterMachine(newMachine, cellPosition);
         Debug.Log(
-        $"{selectedPrefab.name}を配置しました: {cellPosition}");
+            $"{selected_prefab.name}を配置しました: {cellPosition}"
+        );
+
+        machine_start_cells[newMachine] = cellPosition;
     }
 
     // マウス位置からグリッドのマスを取得
@@ -182,13 +261,233 @@ public class GridMacineplacer : MonoBehaviour
         Vector3 mousePosition = Input.mousePosition;
 
         // Z=0の平面までの距離
-        mousePosition.z = -mainCamera.transform.position.z;
+        mousePosition.z = -main_camera.transform.position.z;
 
         // スクリーン座標をワールド座標に変換
         Vector3 worldPosition =
-            mainCamera.ScreenToWorldPoint(mousePosition);
+            main_camera.ScreenToWorldPoint(mousePosition);
 
-        return gridSystem.WorldToCell(worldPosition);
+        return grid_system.WorldToCell(worldPosition);
+    }
+    //ドラッグ開始距離
+    private void StartDragging()
+    {
+        Vector3Int cell = GetMouseCellPosition();
+
+        if (!placed_machines.TryGetValue(
+            cell, out GameObject machine))
+        {
+            return;
+        }
+
+        if (!machine_start_cells.TryGetValue(
+               machine, out Vector3Int startCell))
+        {
+            Debug.LogError("機械の配置位置が見つかりません");
+            return;
+        }
+
+        moving_machine = machine;
+        original_cell = startCell;
+
+        // クリックしたマスと機械の左下の差を保存
+        drag_cell_offset = cell - startCell;
+
+        // 元の占有マスをすべて解除
+        UnregisterMachine(machine);
+
+        isDragging = true;
+
+        Debug.Log("機械を移動します");
+    }
+    //ドラッグ中の処理
+    private void UpdateDragging()
+    {
+        Vector3Int mouseCell = GetMouseCellPosition();
+
+        Vector3Int newStartCell = mouseCell - drag_cell_offset;
+
+        MachineBaseTest machineBase = GetMachineBase(moving_machine);
+
+        if (machineBase == null)
+        {
+            return;
+        }
+
+        Vector3 worldPosition =
+            grid_system.CellToWorldCenter(newStartCell);
+
+        worldPosition += new Vector3(
+            (machineBase.Width - 1) * 0.5f,
+            (machineBase.Height - 1) * 0.5f,
+            0
+        );
+
+        moving_machine.transform.position = worldPosition;
+    }
+    //ドラッグ終了時の処理
+
+
+    private void EndDragging()
+    {
+        Vector3Int mouseCell = GetMouseCellPosition();
+
+        // 機械の左下のマス
+        Vector3Int newStartCell = mouseCell - drag_cell_offset;
+
+        MachineBaseTest machineBase = GetMachineBase(moving_machine);
+
+        if (machineBase == null)
+        {
+            return;
+        }
+
+        int width = machineBase.Width;
+        int height = machineBase.Height;
+
+        bool canMove = true;
+
+        // 移動先の全マスを確認
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Vector3Int cell = newStartCell
+                    + new Vector3Int(x, y, 0);
+
+                if (placed_machines.ContainsKey(cell))
+                {
+                    canMove = false;
+                    break;
+                }
+            }
+
+            if (!canMove)
+            {
+                break;
+            }
+        }
+
+        if (canMove)
+        {
+            // 新しい位置に移動
+            Vector3 worldPosition =
+                grid_system.CellToWorldCenter(newStartCell);
+
+            worldPosition += new Vector3(
+                (width - 1) * 0.5f,
+                (height - 1) * 0.5f,
+                0
+            );
+
+            moving_machine.transform.position = worldPosition;
+
+            // 新しい占有マスを登録
+            RegisterMachine(moving_machine, newStartCell);
+
+            Debug.Log("機械を移動しました");
+        }
+        else
+        {
+            // 移動できない場合は元の位置に戻す
+            Vector3 worldPosition =
+                grid_system.CellToWorldCenter(original_cell);
+
+            worldPosition += new Vector3(
+                (width - 1) * 0.5f,
+                (height - 1) * 0.5f,
+                0
+            );
+
+            moving_machine.transform.position = worldPosition;
+
+            RegisterMachine(moving_machine, original_cell);
+
+            Debug.Log("移動先に機械があります");
+        }
+
+        moving_machine = null;
+        isDragging = false;
+    }
+
+
+
+    private void RegisterMachine(
+        GameObject machine, Vector3Int startCell)
+    {
+        MachineBaseTest machineBase = GetMachineBase(machine);
+
+        if (machineBase == null)
+        {
+            return;
+        }
+
+        machine_start_cells[machine] = startCell;
+
+        for (int x = 0; x < machineBase.Width; x++)
+        {
+            for (int y = 0; y < machineBase.Height; y++)
+            {
+                Vector3Int cell = startCell
+                    + new Vector3Int(x, y, 0);
+
+                placed_machines[cell] = machine;
+            }
+        }
+    }
+
+    private void UnregisterMachine(GameObject machine)
+    {
+        if (!machine_start_cells.TryGetValue(
+            machine, out Vector3Int startCell))
+        {
+            return;
+        }
+
+        MachineBaseTest machineBase = GetMachineBase(machine);
+
+        if (machineBase == null)
+        {
+            return;
+        }
+
+        for (int x = 0; x < machineBase.Width; x++)
+        {
+            for (int y = 0; y < machineBase.Height; y++)
+            {
+                Vector3Int cell = startCell
+                    + new Vector3Int(x, y, 0);
+
+                // この機械自身の登録だけを解除
+                if (placed_machines.TryGetValue(
+                    cell, out GameObject registeredMachine)
+                    && registeredMachine == machine)
+                {
+                    placed_machines.Remove(cell);
+                }
+            }
+        }
+
+        machine_start_cells.Remove(machine);
+    }
+
+
+
+
+    //ほかのスクリプトでの呼び出し
+    //Vector3Int bottomLeft = placer.GetMachineBottomLeftCell(targetMachine);
+
+
+    //左下のマスを取得
+    public Vector3Int GetMachineBottomLeftCell(GameObject machine)
+    {
+        if (machine_start_cells.TryGetValue(machine, out Vector3Int cell))
+        {
+            return cell;
+        }
+
+        Debug.LogError("機械の配置座標が見つかりません");
+        return Vector3Int.zero;
     }
 
 }
