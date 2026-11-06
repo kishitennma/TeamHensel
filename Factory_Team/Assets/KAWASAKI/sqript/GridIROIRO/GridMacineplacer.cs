@@ -252,7 +252,6 @@ public class GridMacineplacer : MonoBehaviour
             $"{selected_prefab.name}を配置しました: {cellPosition}"
         );
 
-        machine_start_cells[newMachine] = cellPosition;
     }
 
     // マウス位置からグリッドのマスを取得
@@ -472,7 +471,7 @@ public class GridMacineplacer : MonoBehaviour
     }
 
 
-
+    //---------------------------------------------------------------------------------------------
 
     //ほかのスクリプトでの呼び出し
     //Vector3Int bottomLeft = placer.GetMachineBottomLeftCell(targetMachine);
@@ -490,4 +489,57 @@ public class GridMacineplacer : MonoBehaviour
         return Vector3Int.zero;
     }
 
+
+
+
+// 指定したマスにオブジェクト(機械)があるか
+public bool HasObjectAt(Vector3Int cell)
+    {
+        return placed_machines.TryGetValue(cell, out GameObject obj)
+               && obj != null;
+    }
+    /*  if (placer.HasObjectAt(pos))
+    //{
+    //    Debug.Log("オブジェクトがあります");
+    //}
+    //else
+    //{
+    //    Debug.Log("オブジェクトはありません");
+    }*/
+
+
+
+
+    // 指定したマスのオブジェクト(機械)を取得
+    public GameObject GetObjectAt(Vector3Int cell)
+    {
+        if (placed_machines.TryGetValue(cell, out GameObject obj))
+        {
+            return obj;
+        }
+
+        return null;
+    }
+    /*
+     GameObject obj = placer.GetObjectAt(pos);
+
+    if (obj != null)
+    {
+        Debug.Log("オブジェクト名：" + obj.name);
+    }
+    */
+
+
+    // 指定したマスのオブジェクトについているスクリプトを取得
+    public T GetComponentAt<T>(Vector3Int cell) where T : Component
+    {
+        GameObject obj = GetObjectAt(cell);
+
+        if (obj == null)
+        {
+            return null;
+        }
+
+        return obj.GetComponent<T>();
+    }
 }
