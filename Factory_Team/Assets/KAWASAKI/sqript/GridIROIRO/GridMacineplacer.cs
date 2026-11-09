@@ -17,8 +17,8 @@ public class GridMacineplacer : MonoBehaviour
 
 
     // 配置済みのマスと機械を記録
-    private Dictionary<Vector3Int, GameObject> placed_machines =
-        new Dictionary<Vector3Int, GameObject>();
+    private Dictionary<Vector2Int, GameObject> placed_machines =
+        new Dictionary<Vector2Int, GameObject>();
 
     // 配置モードか撤去モードか
     private bool isRemovalMode = false;
@@ -30,17 +30,17 @@ public class GridMacineplacer : MonoBehaviour
     private GameObject moving_machine;
 
     // 移動前のマス
-    private Vector3Int original_cell;
+    private Vector2Int original_cell;
 
     // ドラッグ中かどうか
     private bool isDragging = false;
 
     // 機械ごとの左下の配置マスを記録
-    private Dictionary<GameObject, Vector3Int> machine_start_cells =
-        new Dictionary<GameObject, Vector3Int>();
+    private Dictionary<GameObject, Vector2Int> machine_start_cells =
+        new Dictionary<GameObject, Vector2Int>();
 
     // ドラッグ開始時のクリック位置と機械の左下の差
-    private Vector3Int drag_cell_offset;
+    private Vector2Int drag_cell_offset;
 
     //MachineBaseを取得
     private MachineBaseTest GetMachineBase(GameObject machine)
@@ -101,7 +101,7 @@ public class GridMacineplacer : MonoBehaviour
             }
             else
             {
-                Vector3Int cell = GetMouseCellPosition();
+                Vector2Int cell = GetMouseCellPosition();
 
                 // 既存機械があればドラッグ
                 if (placed_machines.ContainsKey(cell))
@@ -169,7 +169,7 @@ public class GridMacineplacer : MonoBehaviour
     {
 
         // クリックしたマスを取得
-        Vector3Int cellPosition = GetMouseCellPosition();
+        Vector2Int cellPosition = GetMouseCellPosition();
 
         if (!placed_machines.TryGetValue(
               cellPosition, out GameObject machine))
@@ -211,15 +211,15 @@ public class GridMacineplacer : MonoBehaviour
         int height = machineBase.Height;
 
         // クリックしたマスを取得
-        Vector3Int cellPosition = GetMouseCellPosition();
+        Vector2Int cellPosition = GetMouseCellPosition();
 
         // 配置予定の全マスを確認
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                Vector3Int checkCell = cellPosition
-                    + new Vector3Int(x, y, 0);
+                Vector2Int checkCell = cellPosition
+                    + new Vector2Int(x, y);
 
                 if (placed_machines.ContainsKey(checkCell))
                 {
@@ -255,7 +255,7 @@ public class GridMacineplacer : MonoBehaviour
     }
 
     // マウス位置からグリッドのマスを取得
-    private Vector3Int GetMouseCellPosition()
+    private Vector2Int GetMouseCellPosition()
     {
         Vector3 mousePosition = Input.mousePosition;
 
@@ -271,7 +271,7 @@ public class GridMacineplacer : MonoBehaviour
     //ドラッグ開始距離
     private void StartDragging()
     {
-        Vector3Int cell = GetMouseCellPosition();
+        Vector2Int cell = GetMouseCellPosition();
 
         if (!placed_machines.TryGetValue(
             cell, out GameObject machine))
@@ -280,7 +280,7 @@ public class GridMacineplacer : MonoBehaviour
         }
 
         if (!machine_start_cells.TryGetValue(
-               machine, out Vector3Int startCell))
+               machine, out Vector2Int startCell))
         {
             Debug.LogError("機械の配置位置が見つかりません");
             return;
@@ -302,9 +302,9 @@ public class GridMacineplacer : MonoBehaviour
     //ドラッグ中の処理
     private void UpdateDragging()
     {
-        Vector3Int mouseCell = GetMouseCellPosition();
+        Vector2Int mouseCell = GetMouseCellPosition();
 
-        Vector3Int newStartCell = mouseCell - drag_cell_offset;
+        Vector2Int newStartCell = mouseCell - drag_cell_offset;
 
         MachineBaseTest machineBase = GetMachineBase(moving_machine);
 
@@ -329,10 +329,10 @@ public class GridMacineplacer : MonoBehaviour
 
     private void EndDragging()
     {
-        Vector3Int mouseCell = GetMouseCellPosition();
+        Vector2Int mouseCell = GetMouseCellPosition();
 
         // 機械の左下のマス
-        Vector3Int newStartCell = mouseCell - drag_cell_offset;
+        Vector2Int newStartCell = mouseCell - drag_cell_offset;
 
         MachineBaseTest machineBase = GetMachineBase(moving_machine);
 
@@ -351,8 +351,8 @@ public class GridMacineplacer : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                Vector3Int cell = newStartCell
-                    + new Vector3Int(x, y, 0);
+                Vector2Int cell = newStartCell
+                    + new Vector2Int(x, y);
 
                 if (placed_machines.ContainsKey(cell))
                 {
@@ -412,7 +412,7 @@ public class GridMacineplacer : MonoBehaviour
 
 
     private void RegisterMachine(
-        GameObject machine, Vector3Int startCell)
+        GameObject machine, Vector2Int startCell)
     {
         MachineBaseTest machineBase = GetMachineBase(machine);
 
@@ -427,8 +427,8 @@ public class GridMacineplacer : MonoBehaviour
         {
             for (int y = 0; y < machineBase.Height; y++)
             {
-                Vector3Int cell = startCell
-                    + new Vector3Int(x, y, 0);
+                Vector2Int cell = startCell
+                    + new Vector2Int(x, y);
 
                 placed_machines[cell] = machine;
             }
@@ -438,7 +438,7 @@ public class GridMacineplacer : MonoBehaviour
     private void UnregisterMachine(GameObject machine)
     {
         if (!machine_start_cells.TryGetValue(
-            machine, out Vector3Int startCell))
+            machine, out Vector2Int startCell))
         {
             return;
         }
@@ -454,8 +454,8 @@ public class GridMacineplacer : MonoBehaviour
         {
             for (int y = 0; y < machineBase.Height; y++)
             {
-                Vector3Int cell = startCell
-                    + new Vector3Int(x, y, 0);
+                Vector2Int cell = startCell
+                    + new Vector2Int(x, y);
 
                 // この機械自身の登録だけを解除
                 if (placed_machines.TryGetValue(
@@ -472,28 +472,28 @@ public class GridMacineplacer : MonoBehaviour
 
 
     //---------------------------------------------------------------------------------------------
-
+    //---------------------------------------------------------------------------------------------
     //ほかのスクリプトでの呼び出し
     //Vector3Int bottomLeft = placer.GetMachineBottomLeftCell(targetMachine);
 
 
     //左下のマスを取得
-    public Vector3Int GetMachineBottomLeftCell(GameObject machine)
+    public Vector2Int GetMachineBottomLeftCell(GameObject machine)
     {
-        if (machine_start_cells.TryGetValue(machine, out Vector3Int cell))
+        if (machine_start_cells.TryGetValue(machine, out Vector2Int cell))
         {
             return cell;
         }
 
         Debug.LogError("機械の配置座標が見つかりません");
-        return Vector3Int.zero;
+        return Vector2Int.zero;
     }
 
 
 
 
 // 指定したマスにオブジェクト(機械)があるか
-public bool HasObjectAt(Vector3Int cell)
+public bool HasObjectAt(Vector2Int cell)
     {
         return placed_machines.TryGetValue(cell, out GameObject obj)
                && obj != null;
@@ -511,7 +511,7 @@ public bool HasObjectAt(Vector3Int cell)
 
 
     // 指定したマスのオブジェクト(機械)を取得
-    public GameObject GetObjectAt(Vector3Int cell)
+    public GameObject GetObjectAt(Vector2Int cell)
     {
         if (placed_machines.TryGetValue(cell, out GameObject obj))
         {
@@ -531,7 +531,7 @@ public bool HasObjectAt(Vector3Int cell)
 
 
     // 指定したマスのオブジェクトについているスクリプトを取得
-    public T GetComponentAt<T>(Vector3Int cell) where T : Component
+    public T GetComponentAt<T>(Vector2Int cell) where T : Component
     {
         GameObject obj = GetObjectAt(cell);
 
