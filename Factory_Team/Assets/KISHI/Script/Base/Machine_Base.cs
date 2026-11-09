@@ -6,6 +6,13 @@ public abstract class Machine_Base : MonoBehaviour
     [SerializeField] int output;//アウトプット数
     [SerializeField] int input;//インプット数
 
+    GridMacineplacer gridsystem;//グリッド管理クラス
+
+    Machine_Base machine;
+
+    [SerializeField] Item.ItemID o_id;
+    [SerializeField] Item.ItemID i_id;
+
     [SerializeField] private Direction input_dir;//インプットが向いている方向
     [SerializeField] private Direction output_dir;//アウトプットが向いている方向
     [SerializeField] private Direction machine_dir = Direction.RIGHT;//機械自体の向いている方向
@@ -14,8 +21,8 @@ public abstract class Machine_Base : MonoBehaviour
     public Direction OutputDir => output_dir;
     public Direction MachinetDir => machine_dir;
 
-    [SerializeField]Vector2Int size;//機械のサイズ
-    Vector2Int grid_pos;//グリッド上での機械のポジション
+    [SerializeField] Vector2Int size;//機械のサイズ
+    Vector2Int grid_pos;//グリッド上での機械のポジションgrid
 
 
 
@@ -27,12 +34,19 @@ public abstract class Machine_Base : MonoBehaviour
         LEFT,
     }
 
-    Direction Rotate_Direction(Direction dir)//渡されたDirection型を時計回りで90度ずつ回転
+    public void Set_GridPos(Vector2Int pos)
     {
-        if (dir == Direction.LEFT)
-            return  Direction.UP;
-        else
-            return dir + 1;
+        grid_pos = pos;
+    }
+
+    /// <summary>
+    /// 渡されたDirection型を時計回りで90度ずつ回転
+    /// </summary>
+    /// <param name="dir">方向</param>
+    /// <returns>時計回りに90度回転</returns>
+    Direction Rotate_Direction(Direction dir)
+    {
+            return (Direction)(((int)dir + 1) % 4);
     }
 
     public void Machine_Rotate()//機械とinput辺/output辺の回転
@@ -42,9 +56,9 @@ public abstract class Machine_Base : MonoBehaviour
         output_dir = Rotate_Direction(output_dir);
     }
 
-    Vector2Int Get_Rotate_Size()//回転後の機械のサイズ取得
+    public Vector2Int Get_Rotate_Size()//回転後の機械のサイズ取得
     {
-        if (machine_dir == Direction.UP 
+        if (machine_dir == Direction.UP
          || machine_dir == Direction.DOWN)
         {
             return new Vector2Int(size.y, size.x);
@@ -59,7 +73,7 @@ public abstract class Machine_Base : MonoBehaviour
         switch (output_dir)
         {
             case Direction.UP:
-                for(int i= 0; i < size.x; i++)
+                for (int i = 0; i < size.x; i++)
                 {
                     check_sells.Add(new Vector2Int(
                         grid_pos.x + i,
@@ -146,20 +160,37 @@ public abstract class Machine_Base : MonoBehaviour
 
         foreach (Vector2Int cellpos in output_check_cells)
         {
+            machine = gridsystem.GetComponentAt<Machine_Base>(cellpos);
+
+            if (machine == null)
+            {
+                Debug.Log("x:" + cellpos.x + ",y:" + cellpos.y + "が空");
+                continue;
+            }
+
+            if ((int)machine.InputDir == ((int)OutputDir + 2) % 4)
+            {
+
+            }
+
 
         }
     }
-    /// <summary>
-    /// input辺に隣接しているセルを検索
-    /// </summary>
-    public void Input_Check()
-    {
-        List<Vector2Int> input_check_cells = Input_Get_Check_Cells();
+    ///// <summary>
+    ///// input辺に隣接しているセルを検索
+    ///// </summary>
+    //public void Input_Check()
+    //{
+    //    List<Vector2Int> input_check_cells = Input_Get_Check_Cells();
 
-        foreach(Vector2Int cellpos in input_check_cells)
-        {
+    //    foreach(Vector2Int cellpos in input_check_cells)
+    //    {
+    //        machine = gridsystem.GetComponentAt<Machine_Base>(cellpos);
+    //        if ((int)machine.OutputDir == ((int)InputDir + 2) % 4)
+    //        {
 
-        }
-    }
+    //        }
+    //    }
+    //}
 
 }
