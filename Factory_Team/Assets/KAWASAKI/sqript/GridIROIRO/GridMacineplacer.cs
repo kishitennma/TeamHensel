@@ -25,7 +25,6 @@ public class GridMacineplacer : MonoBehaviour
 
     private Camera main_camera;
 
-
     // ˆÚ“®’†‚Ì‹@ŠB
     private GameObject moving_machine;
 

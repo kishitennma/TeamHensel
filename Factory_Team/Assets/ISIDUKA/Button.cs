@@ -7,6 +7,9 @@ public class Button : MonoBehaviour
     [SerializeField] GameObject production_panel;
     [SerializeField] GameObject processing_panel;
     [SerializeField] GameObject synthesis_panel;
+    [SerializeField] GameObject buy_panel;
+    [SerializeField] GameObject all_panel;
+    [SerializeField] GameObject release_button;
 
 
     public void Main_Panel()
@@ -45,5 +48,20 @@ public class Button : MonoBehaviour
         rail_panel.SetActive(false);
         production_panel.SetActive(false);
         processing_panel.SetActive(false);
+    }
+    public void Buy_Panel()
+    {
+        buy_panel.SetActive(!buy_panel.activeSelf);
+    }
+
+    public void Modeswitch()
+    {
+        all_panel.SetActive(false);
+        release_button.SetActive(true);
+    }
+    public void Release()
+    {
+        all_panel.SetActive(true);
+        release_button.SetActive(false);
     }
 }
