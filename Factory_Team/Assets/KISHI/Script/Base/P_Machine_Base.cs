@@ -1,16 +1,10 @@
 using UnityEngine;
 
-public class P_Machine_Base : MonoBehaviour
+public class P_Machine_Base : Machine_Base
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] Item.ItemID p_id;//生産する素材アイテムのID
+    [SerializeField] float p_rate;//生産スピード
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
+
 }
