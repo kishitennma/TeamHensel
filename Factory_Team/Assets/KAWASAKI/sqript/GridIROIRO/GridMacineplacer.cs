@@ -34,6 +34,10 @@ public class GridMacineplacer : MonoBehaviour
     // ドラッグ中かどうか
     private bool isDragging = false;
 
+    // 設置プレビュー用
+    private GameObject preview_object;
+    private SpriteRenderer[] preview_renderers;
+
     // 機械ごとの左下の配置マスを記録
     private Dictionary<GameObject, Vector2Int> machine_start_cells =
         new Dictionary<GameObject, Vector2Int>();
@@ -75,10 +79,21 @@ public class GridMacineplacer : MonoBehaviour
             return;
         }
 
+        // プレビューの位置を更新
+        if (selected_prefab != null && !isDragging)
+        {
+            UpdatePreview();
+        }
         // 右クリックで選択解除
         if (Input.GetMouseButtonDown(1))
         {
             selected_prefab = null;
+            if (preview_object != null)
+            {
+                Destroy(preview_object);
+                preview_object = null;
+                preview_renderers = null;
+            }
             Debug.Log("選択解除");
             return;
         }
@@ -141,7 +156,135 @@ public class GridMacineplacer : MonoBehaviour
         isRemovalMode = true;
         selected_prefab = null;
 
+        if (preview_object != null)
+        {
+            Destroy(preview_object);
+            preview_object = null;
+            preview_renderers = null;
+        }
+
         Debug.Log("撤去モードに切り替えました。");
+    }
+
+    // 設置プレビューを作成
+    private void CreatePreview()
+    {
+        if (preview_object != null)
+        {
+            Destroy(preview_object);
+        }
+
+        preview_object = Instantiate(selected_prefab);
+
+        // SpriteRendererを取得
+        preview_renderers =
+            preview_object.GetComponentsInChildren<SpriteRenderer>();
+
+        // プレビュー側のスクリプトを停止
+        MonoBehaviour[] scripts =
+            preview_object.GetComponentsInChildren<MonoBehaviour>();
+
+        foreach (MonoBehaviour script in scripts)
+        {
+            script.enabled = false;
+        }
+
+        // Colliderを無効化
+        Collider2D[] colliders =
+            preview_object.GetComponentsInChildren<Collider2D>();
+
+        foreach (Collider2D col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        // 半透明にする
+        SetPreviewColor();
+    }
+
+    // プレビューを半透明にする
+    private void SetPreviewColor()
+    {
+        if (preview_renderers == null)
+        {
+            return;
+        }
+
+        Color color = Color.white;
+        color.a = 0.4f;
+
+        foreach (SpriteRenderer sprite in preview_renderers)
+        {
+            sprite.color = color;
+        }
+    }
+
+
+    // 設置可能か確認
+    private bool CanPlaceMachine(Vector2Int cellPosition)
+    {
+        Machine_Base machine_base = GetMachineBase(selected_prefab);
+
+        if (machine_base == null)
+        {
+            return false;
+        }
+
+        for (int x = 0; x < machine_base.Width; x++)
+        {
+            for (int y = 0; y < machine_base.Height; y++)
+            {
+                Vector2Int checkCell =
+                    cellPosition + new Vector2Int(x, y);
+
+                if (placed_machines.ContainsKey(checkCell))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // プレビューの位置を更新
+    private void UpdatePreview()
+    {
+        if (preview_object == null || selected_prefab == null)
+        {
+            return;
+        }
+
+        Vector2Int cellPosition = GetMouseCellPosition();
+
+        Machine_Base machine_base = GetMachineBase(selected_prefab);
+
+        if (machine_base == null)
+        {
+            return;
+        }
+
+        int width = machine_base.Width;
+        int height = machine_base.Height;
+
+        Vector3 worldPosition =
+            grid_system.CellToWorldCenter(cellPosition);
+
+        worldPosition += new Vector3(
+            (width - 1) * 0.5f,
+            (height - 1) * 0.5f,
+            0
+        );
+
+        preview_object.transform.position = worldPosition;
+
+        // 設置できない場所ではプレビューを隠す
+        bool canPlace = CanPlaceMachine(cellPosition);
+
+        foreach (SpriteRenderer sprite in preview_renderers)
+        {
+            sprite.enabled = canPlace;
+        }
     }
 
     public void SelectMachine(int prefabIndex)
@@ -152,14 +295,27 @@ public class GridMacineplacer : MonoBehaviour
             return;
         }
 
-        selected_prefab = machine_prefabs[prefabIndex];
+        GameObject prefab = machine_prefabs[prefabIndex];
 
-        //機械の選択の解除
-        if (selected_prefab == null)
+        if (prefab == null)
         {
+            Debug.LogWarning("選択したPrefabが設定されていません。");
             return;
         }
+
+        // 古いプレビューを削除
+        if (preview_object != null)
+        {
+            Destroy(preview_object);
+            preview_object = null;
+            preview_renderers = null;
+        }
+
+        selected_prefab = prefab;
         isRemovalMode = false;
+
+        CreatePreview();
+
         Debug.Log($"機械:{selected_prefab.name}");
     }
 
@@ -182,9 +338,6 @@ public class GridMacineplacer : MonoBehaviour
 
         // 機械を削除
         Destroy(machine);
-
-        // 配置記録を削除
-        placed_machines.Remove(cellPosition);
 
         Debug.Log($"機械を撤去しました: {cellPosition}");
 
@@ -245,6 +398,7 @@ public class GridMacineplacer : MonoBehaviour
             Quaternion.identity
         );
         Machine_Base new_machine_base = GetMachineBase(newMachine);
+        Debug.Log($"配置登録先：{GetInstanceID()} / 座標：{cellPosition}");
 
         new_machine_base.Set_GridPos(cellPosition);
         new_machine_base.SetGridSystem(this);
@@ -383,6 +537,9 @@ public class GridMacineplacer : MonoBehaviour
 
             moving_machine.transform.position = worldPosition;
 
+            // Machine_Baseのグリッド座標も更新
+            machine_base.Set_GridPos(newStartCell);
+
             // 新しい占有マスを登録
             RegisterMachine(moving_machine, newStartCell);
 
@@ -422,7 +579,7 @@ public class GridMacineplacer : MonoBehaviour
         {
             return;
         }
-
+        Debug.Log($"【登録確認】{machine.name} / Width={machineBase.Width} / Height={machineBase.Height}");
         machine_start_cells[machine] = startCell;
 
         for (int x = 0; x < machineBase.Width; x++)
@@ -433,6 +590,8 @@ public class GridMacineplacer : MonoBehaviour
                     + new Vector2Int(x, y);
 
                 placed_machines[cell] = machine;
+
+                Debug.Log($"機械登録：{machine.name} / 座標：{cell}");
             }
         }
     }
@@ -517,9 +676,11 @@ public bool HasObjectAt(Vector2Int cell)
     {
         if (placed_machines.TryGetValue(cell, out GameObject obj))
         {
+            Debug.Log($"【検索成功】座標：{cell} / オブジェクト：{obj.name}");
             return obj;
         }
 
+        Debug.Log($"【検索失敗】座標：{cell} は登録されていません");
         return null;
     }
     /*
@@ -539,9 +700,11 @@ public bool HasObjectAt(Vector2Int cell)
 
         if (obj == null)
         {
+            Debug.Log($"座標 {cell} にオブジェクトが登録されていません");
             return null;
         }
 
+        Debug.Log($"座標 {cell} のオブジェクト：{obj.name}");
         return obj.GetComponent<T>();
     }
 }

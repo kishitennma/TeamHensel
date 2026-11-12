@@ -148,8 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc5e9ba0280d5594ab90d38b85db872a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rail: {fileID: 0}
-  test_item: {fileID: 0}
+  rail: {fileID: 8043014963288707841, guid: 255602d977a828f4698b70db350190ff, type: 3}
+  test_item: {fileID: 3394576452183998561, guid: a3c26e237cc40ff42afac5a03d084ec1, type: 3}
 --- !u!4 &99197910
 Transform:
   m_ObjectHideFlags: 0
