@@ -6,7 +6,7 @@ public abstract class Machine_Base : MonoBehaviour
     [SerializeField] int output;//アウトプット数
     [SerializeField] int input;//インプット数
 
-    GridMacineplacer gridsystem;//グリッド管理クラス
+    protected GridMacineplacer gridsystem;//グリッド管理クラス
 
     Machine_Base machine;
 
@@ -23,7 +23,7 @@ public abstract class Machine_Base : MonoBehaviour
 
     [SerializeField] Vector2Int size;//機械のサイズ
     Vector2Int grid_pos;//グリッド上での機械のポジションgrid
-
+    public Vector2Int GridPos => grid_pos;
 
 
     public enum Direction //方向
@@ -175,6 +175,11 @@ public abstract class Machine_Base : MonoBehaviour
 
 
         }
+    }
+
+    public virtual bool Recive_Item(Item item)
+    {
+        return false;
     }
     ///// <summary>
     ///// input辺に隣接しているセルを検索
