@@ -42,18 +42,18 @@ public class GridMacineplacer : MonoBehaviour
     private Vector2Int drag_cell_offset;
 
     //MachineBaseを取得
-    private MachineBaseTest GetMachineBase(GameObject machine)
+    private Machine_Base GetMachineBase(GameObject machine)
     {
-        MachineBaseTest machineBase = machine.GetComponent<MachineBaseTest>();
+        Machine_Base machine_base = machine.GetComponent<Machine_Base>();
 
-        if (machineBase == null)
+        if (machine_base == null)
         {
             Debug.LogError(
                 $"{machine.name} に MachineBase がありません。"
             );
         }
 
-        return machineBase;
+        return machine_base;
     }
 
     private void Awake()
@@ -199,15 +199,15 @@ public class GridMacineplacer : MonoBehaviour
         }
 
         // MachineBaseTestからサイズを取得
-        MachineBaseTest machineBase = GetMachineBase(selected_prefab);
+        Machine_Base machine_base = GetMachineBase(selected_prefab);
 
-        if (machineBase == null)
+        if (machine_base == null)
         {
             return;
         }
 
-        int width = machineBase.Width;
-        int height = machineBase.Height;
+        int width = machine_base.Width;
+        int height = machine_base.Height;
 
         // クリックしたマスを取得
         Vector2Int cellPosition = GetMouseCellPosition();
@@ -244,7 +244,10 @@ public class GridMacineplacer : MonoBehaviour
             spawnPosition,
             Quaternion.identity
         );
+        Machine_Base new_machine_base = GetMachineBase(newMachine);
 
+        new_machine_base.Set_GridPos(cellPosition);
+        new_machine_base.SetGridSystem(this);
         // 占有マスと配置位置を登録
         RegisterMachine(newMachine, cellPosition);
         Debug.Log(
@@ -305,9 +308,9 @@ public class GridMacineplacer : MonoBehaviour
 
         Vector2Int newStartCell = mouseCell - drag_cell_offset;
 
-        MachineBaseTest machineBase = GetMachineBase(moving_machine);
+        Machine_Base machine_base = GetMachineBase(moving_machine);
 
-        if (machineBase == null)
+        if (machine_base == null)
         {
             return;
         }
@@ -316,8 +319,8 @@ public class GridMacineplacer : MonoBehaviour
             grid_system.CellToWorldCenter(newStartCell);
 
         worldPosition += new Vector3(
-            (machineBase.Width - 1) * 0.5f,
-            (machineBase.Height - 1) * 0.5f,
+            (machine_base.Width - 1) * 0.5f,
+            (machine_base.Height - 1) * 0.5f,
             0
         );
 
@@ -333,15 +336,15 @@ public class GridMacineplacer : MonoBehaviour
         // 機械の左下のマス
         Vector2Int newStartCell = mouseCell - drag_cell_offset;
 
-        MachineBaseTest machineBase = GetMachineBase(moving_machine);
+        Machine_Base machine_base = GetMachineBase(moving_machine);
 
-        if (machineBase == null)
+        if (machine_base == null)
         {
             return;
         }
 
-        int width = machineBase.Width;
-        int height = machineBase.Height;
+        int width = machine_base.Width;
+        int height = machine_base.Height;
 
         bool canMove = true;
 
@@ -413,7 +416,7 @@ public class GridMacineplacer : MonoBehaviour
     private void RegisterMachine(
         GameObject machine, Vector2Int startCell)
     {
-        MachineBaseTest machineBase = GetMachineBase(machine);
+        Machine_Base machineBase = GetMachineBase(machine);
 
         if (machineBase == null)
         {
@@ -442,7 +445,7 @@ public class GridMacineplacer : MonoBehaviour
             return;
         }
 
-        MachineBaseTest machineBase = GetMachineBase(machine);
+        Machine_Base machineBase = GetMachineBase(machine);
 
         if (machineBase == null)
         {

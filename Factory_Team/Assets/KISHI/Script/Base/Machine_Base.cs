@@ -23,9 +23,14 @@ public abstract class Machine_Base : MonoBehaviour
 
     [SerializeField] Vector2Int size;//機械のサイズ
     Vector2Int grid_pos;//グリッド上での機械のポジションgrid
+    // GridMacineplacerからサイズを取得する
+    public int Width => size.x;
+    public int Height => size.y;
     public Vector2Int GridPos => grid_pos;
-
-
+    public void SetGridSystem(GridMacineplacer placer)
+    {
+        gridsystem = placer;
+    }
     public enum Direction //方向
     {
         UP,
