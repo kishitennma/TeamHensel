@@ -71,7 +71,7 @@ public abstract class Machine_Base : MonoBehaviour
         return size;
     }
 
-    List<Vector2Int> Output_Get_Check_Cells()//Output辺に隣接する座標
+    public List<Vector2Int> Output_Get_Check_Cells()//Output辺に隣接する座標
     {
         Vector2Int size = Get_Rotate_Size();
         List<Vector2Int> check_sells = new List<Vector2Int>();
@@ -114,7 +114,7 @@ public abstract class Machine_Base : MonoBehaviour
         return check_sells;
     }
 
-    List<Vector2Int> Input_Get_Check_Cells()//Output辺に隣接する座標
+    public List<Vector2Int> Input_Get_Check_Cells()//Output辺に隣接する座標
     {
         Vector2Int size = Get_Rotate_Size();
         List<Vector2Int> check_sells = new List<Vector2Int>();
