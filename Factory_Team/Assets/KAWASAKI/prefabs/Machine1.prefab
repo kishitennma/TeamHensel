@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3861867850477900010}
   - component: {fileID: 5047201649828539950}
+  - component: {fileID: 1963580582157772334}
   m_Layer: 0
   m_Name: Machine1
   m_TagString: Untagged
@@ -87,3 +88,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1963580582157772334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8524396106365709555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecda11b61cf2ddd40b19643ae13ab86c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  output: 0
+  input: 0
+  o_id: 0
+  i_id: 0
+  input_dir: 0
+  output_dir: 1
+  machine_dir: 1
+  size: {x: 1, y: 1}
+  produce_interval: 3
+  item_prefab: {fileID: 3394576452183998561, guid: a3c26e237cc40ff42afac5a03d084ec1, type: 3}

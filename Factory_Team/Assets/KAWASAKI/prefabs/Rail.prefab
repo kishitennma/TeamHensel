@@ -104,7 +104,7 @@ MonoBehaviour:
   input: 0
   o_id: 0
   i_id: 0
-  input_dir: 0
+  input_dir: 3
   output_dir: 1
   machine_dir: 1
   size: {x: 1, y: 1}
