@@ -20,6 +20,8 @@ public class GridMacineplacer : MonoBehaviour
     private Dictionary<Vector2Int, GameObject> placed_machines =
         new Dictionary<Vector2Int, GameObject>();
 
+    private EXshopGrid gridsystem;
+
     // 配置モードか撤去モードか
     private bool isRemovalMode = false;
 
@@ -44,6 +46,11 @@ public class GridMacineplacer : MonoBehaviour
 
     // ドラッグ開始時のクリック位置と機械の左下の差
     private Vector2Int drag_cell_offset;
+
+    public void SetGridSystem(EXshopGrid grid)
+    {
+        gridsystem = grid;
+    }
 
     //MachineBaseを取得
     private Machine_Base GetMachineBase(GameObject machine)
