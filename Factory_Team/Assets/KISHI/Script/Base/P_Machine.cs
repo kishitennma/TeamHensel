@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class P_Machine_Base : Machine_Base
+public class P_Machine: Machine_Base
 {
     [Header("¶Yİ’è")]
     [SerializeField] private float produce_interval = 3f; // ¶YŠÔŠu

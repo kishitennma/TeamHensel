@@ -3,8 +3,8 @@ using UnityEngine;
 
 public abstract class Machine_Base : MonoBehaviour
 {
-    [SerializeField] int output;//アウトプット数
-    [SerializeField] int input;//インプット数
+    [SerializeField] protected int output;//アウトプット数
+    [SerializeField] protected int input;//インプット数
 
     protected GridMacineplacer gridsystem;//グリッド管理クラス
 
