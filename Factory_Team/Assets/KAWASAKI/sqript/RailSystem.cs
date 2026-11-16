@@ -113,8 +113,8 @@ public class RailSystem : Machine_Base
         Debug.Log("次のマス：" + nextCell);
 
         // 隣のマスにあるレールを取得
-        RailSystem nextRail =
-            gridsystem.GetComponentAt<RailSystem>(nextCell);
+        Machine_Base nextRail =
+            gridsystem.GetComponentAt<Machine_Base>(nextCell);
 
 
 

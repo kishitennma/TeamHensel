@@ -1,16 +1,15 @@
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[SerializeField]
+[System.Serializable]
 public class MaterialRecipe
 {
     public string InputMaterialID;//“ü—Í‘fŞ‚ÌID
     public string OutputMaterialID;//‰ÁHŒã‚Ì‘fŞID
     public int InputAmount;//•K—v”
     public int OutputAmount;//¶Y”
-
-
 }
 
 public class MaterialProcessing : MonoBehaviour
@@ -29,7 +28,7 @@ public class MaterialProcessing : MonoBehaviour
 
     public void LoadRecipes()
     {
-        recipes.Clear();    //“o˜^‚³‚ê‚Ä‚¢‚éƒŒƒVƒs‚Ìíœ
+        recipes.Clear();//“o˜^‚³‚ê‚Ä‚¢‚éƒŒƒVƒs‚Ìíœ
 
         if (recipe_csv == null)
         {
@@ -41,13 +40,13 @@ public class MaterialProcessing : MonoBehaviour
 
         string[] lines = recipe_csv.text.Split(
             new[] { "\r\n", "\n", "\r" },
-             StringSplitOptions.RemoveEmptyEntries);
-
+            StringSplitOptions.RemoveEmptyEntries
+        );
 
         //CSV‚Ìƒwƒbƒ_[‚ªˆê’v‚µ‚Ä‚¢‚é‚©Šm”F
         if (lines.Length == 0 ||
-         lines[0].Trim() !=
-         "InputMaterialID,OutputMaterialID,InputAmount,OutputAmount")
+            lines[0].Trim() !=
+            "InputMaterialID,OutputMaterialID,InputAmount,OutputAmount")
         {
             Debug.LogError("CSV‚Ìƒwƒbƒ_[‚ª•s³‚Å‚·");
             return;
@@ -77,7 +76,6 @@ public class MaterialProcessing : MonoBehaviour
                 );
                 continue;
             }
-
 
             //•¶š—ñ¨”’l‚É•ÏŠ·‚·‚é
             if (!int.TryParse(columns[2].Trim(),
@@ -113,6 +111,14 @@ public class MaterialProcessing : MonoBehaviour
         Debug.Log($"ƒŒƒVƒs“Ç‚İ‚İŠ®—¹: {recipes.Count}Œ");
     }
 
+    //‘fŞID‚©‚çƒŒƒVƒs‚ğæ“¾‚·‚é
+    public bool TryGetRecipe(
+        string inputMaterialId,
+        out MaterialRecipe recipe)
+    {
+        return recipes.TryGetValue(inputMaterialId, out recipe);
+    }
+
     public bool TryConvert(
        string inputMaterialId,
        int inputCount,
@@ -124,12 +130,14 @@ public class MaterialProcessing : MonoBehaviour
         outputMaterialId = null;
         outputCount = 0;
         remainder = inputCount;
+
         //‘fŞID‚ª‹óA0‚Ìê‡‚Í‰ÁH‚µ‚È‚¢
         if (string.IsNullOrEmpty(inputMaterialId) ||
             inputCount <= 0)
         {
             return false;
         }
+
         //‘fŞ–¼‚©‚ç‘Î‰‚·‚éƒŒƒVƒs‚ğŒŸõ
         if (!recipes.TryGetValue(
                 inputMaterialId, out MaterialRecipe recipe))
@@ -151,7 +159,4 @@ public class MaterialProcessing : MonoBehaviour
 
         return true;
     }
-
-
 }
-

@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Item;
 
 public class Item : MonoBehaviour
 {
@@ -18,4 +19,15 @@ public class Item : MonoBehaviour
         }
 
     public ItemID itemID;
+
+    //ƒAƒCƒeƒ€‚ÌŽí—Þ‚ðŽæ“¾‚·‚é
+    public ItemID GetItemID()
+    {
+        return itemID;
+    }
+
+    public void SetItemID(ItemID id)
+    {
+        itemID = id;
+    }
 }
