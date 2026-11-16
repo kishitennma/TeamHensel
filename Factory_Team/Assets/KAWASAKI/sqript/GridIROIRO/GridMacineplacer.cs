@@ -334,7 +334,7 @@ public class GridMacineplacer : MonoBehaviour
         }
 
         // すべての占有マスを解放
-        UnregisterMachine(machine);
+        UnRegisterMachine(machine);
 
         // 機械を削除
         Destroy(machine);
@@ -398,15 +398,12 @@ public class GridMacineplacer : MonoBehaviour
             Quaternion.identity
         );
         Machine_Base new_machine_base = GetMachineBase(newMachine);
-        Debug.Log($"配置登録先：{GetInstanceID()} / 座標：{cellPosition}");
 
         new_machine_base.Set_GridPos(cellPosition);
         new_machine_base.SetGridSystem(this);
         // 占有マスと配置位置を登録
         RegisterMachine(newMachine, cellPosition);
-        Debug.Log(
-            $"{selected_prefab.name}を配置しました: {cellPosition}"
-        );
+        Debug.Log($"{selected_prefab.name}を配置しました: {cellPosition}");
 
     }
 
@@ -449,7 +446,7 @@ public class GridMacineplacer : MonoBehaviour
         drag_cell_offset = cell - startCell;
 
         // 元の占有マスをすべて解除
-        UnregisterMachine(machine);
+        UnRegisterMachine(machine);
 
         isDragging = true;
 
@@ -569,7 +566,7 @@ public class GridMacineplacer : MonoBehaviour
     }
 
 
-
+    //機械をグリッドに登録する
     private void RegisterMachine(
         GameObject machine, Vector2Int startCell)
     {
@@ -579,7 +576,7 @@ public class GridMacineplacer : MonoBehaviour
         {
             return;
         }
-        Debug.Log($"【登録確認】{machine.name} / Width={machineBase.Width} / Height={machineBase.Height}");
+        Debug.Log("{machine.name} / Width={machineBase.Width} / Height={machineBase.Height}");
         machine_start_cells[machine] = startCell;
 
         for (int x = 0; x < machineBase.Width; x++)
@@ -596,7 +593,8 @@ public class GridMacineplacer : MonoBehaviour
         }
     }
 
-    private void UnregisterMachine(GameObject machine)
+    //登録した機械を解除する
+    private void UnRegisterMachine(GameObject machine)
     {
         if (!machine_start_cells.TryGetValue(
             machine, out Vector2Int startCell))
@@ -676,11 +674,10 @@ public bool HasObjectAt(Vector2Int cell)
     {
         if (placed_machines.TryGetValue(cell, out GameObject obj))
         {
-            Debug.Log($"【検索成功】座標：{cell} / オブジェクト：{obj.name}");
+            Debug.Log($"座標：{cell} / オブジェクト：{obj.name}");
             return obj;
         }
 
-        Debug.Log($"【検索失敗】座標：{cell} は登録されていません");
         return null;
     }
     /*
@@ -704,7 +701,6 @@ public bool HasObjectAt(Vector2Int cell)
             return null;
         }
 
-        Debug.Log($"座標 {cell} のオブジェクト：{obj.name}");
         return obj.GetComponent<T>();
     }
 }
