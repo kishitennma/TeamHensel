@@ -16,4 +16,6 @@ public class Item : MonoBehaviour
             Macaron = 8,//ƒ}ƒJƒƒ“
             Pudding = 9,//ƒvƒŠƒ“
         }
+
+    public ItemID itemID;
 }

@@ -10,7 +10,7 @@ public class Base : MonoBehaviour
         { Item.ItemID.wheat, 3 },     //小麦
         { Item.ItemID.Choco, 3 },     //チョコ
         { Item.ItemID.Cake, 20 },     //ケーキ
-        { Item.ItemID.Cake, 20 },     //パン
+        { Item.ItemID.Braed, 20 },     //パン
         { Item.ItemID.Cookie, 20 },    //クッキー
         { Item.ItemID.Oreo, 20 },      //オレオ
         { Item.ItemID.dumpling, 30 },   //団子
