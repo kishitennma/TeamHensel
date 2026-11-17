@@ -15,14 +15,23 @@ public class RailSystem : Machine_Base
     //アイテムを受け取る処理
     public override bool Recive_Item(Item item)
     {
+        if (item == null)
+        {
+            Debug.Log("受け取ろうとしたアイテムがnullです");
+            return false;
+        }
+
         if (item_carry != null)
         {
+           // Debug.Log("このレールには既にアイテムがあります：" + item_carry.name);
             return false;
         }
 
         item_carry = item;
         is_moving = true;
-
+        Debug.Log("item_carry：" + item_carry);
+        Debug.Log("is_moving：" + is_moving);
+        Debug.Log("レールがアイテムを受け取りました！");
         Vector2Int direction = Get_Move_Direction();
 
         Vector3 moveDirection = new Vector3(
@@ -31,32 +40,45 @@ public class RailSystem : Machine_Base
             0
         );
 
+        // レールの中央を移動開始位置にする
+        item.transform.position = transform.position;
+
         // 次のマスの中心を移動先にする
-        target_position = item.transform.position + moveDirection;
+        target_position = transform.position + moveDirection;
+        Debug.Log("レールがアイテムを受け取りました：" + item.name);
 
         return true;
-    }
+    }    
+    
     // Update is called once per frame
     void Update()
     {
-        if(!is_moving||item_carry==null)
+
+        if (!is_moving || item_carry == null)
         {
             return;
         }
 
-        // 移動先まで移動
+        Debug.Log(
+            "移動中：" + item_carry.name +
+            " / 移動先：" + target_position
+        );
+
         item_carry.transform.position = Vector3.MoveTowards(
             item_carry.transform.position,
             target_position,
             move_speed * Time.deltaTime
         );
 
-        // 移動先に到着したか確認
+        Debug.Log("現在位置：" + item_carry.transform.position);
+
         if (Vector3.Distance(
             item_carry.transform.position,
             target_position) < 0.001f)
         {
             item_carry.transform.position = target_position;
+
+            Debug.Log("次のマスに到着しました");
 
             Try_Transfer_Item();
         }

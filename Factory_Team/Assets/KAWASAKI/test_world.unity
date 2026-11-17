@@ -148,8 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc5e9ba0280d5594ab90d38b85db872a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rail: {fileID: 8043014963288707841, guid: 255602d977a828f4698b70db350190ff, type: 3}
-  test_item: {fileID: 3394576452183998561, guid: a3c26e237cc40ff42afac5a03d084ec1, type: 3}
+  rail: {fileID: 5012591094324337395, guid: 09ef9d3454309774d88fab16984dcdfb, type: 3}
+  test_item: {fileID: 623973014019459660, guid: 2352c5b0a54d873439f698da5ba887d5, type: 3}
 --- !u!4 &99197910
 Transform:
   m_ObjectHideFlags: 0
@@ -222,7 +222,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Machine2
+  m_text: 'Flour
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1061,7 +1063,7 @@ MonoBehaviour:
   machine_prefabs:
   - {fileID: 8524396106365709555, guid: 21ecd9f583dbe6a43b75a03af68e75f6, type: 3}
   - {fileID: 2287939088099050354, guid: 0e62309a7de1ce14e917ab9aa9eb3f6e, type: 3}
-  - {fileID: 4245285832187758356, guid: 255602d977a828f4698b70db350190ff, type: 3}
+  - {fileID: 786100747177244836, guid: 09ef9d3454309774d88fab16984dcdfb, type: 3}
 --- !u!4 &793074836
 Transform:
   m_ObjectHideFlags: 0
@@ -1239,7 +1241,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Machine1
+  m_text: 'Wheat
 
 '
   m_isRightToLeft: 0

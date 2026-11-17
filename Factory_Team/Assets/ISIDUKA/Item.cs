@@ -6,7 +6,7 @@ public class Item : MonoBehaviour
 
           public enum ItemID
         {
-            wheat = 0,//小麦
+            Wheat = 0,//小麦
             Choco = 1,//チョコ
             Cake = 2,//ケーキ
             Braed = 3,//パン
@@ -16,7 +16,8 @@ public class Item : MonoBehaviour
             Creampuff = 7,//シュークリーム
             Macaron = 8,//マカロン
             Pudding = 9,//プリン
-        }
+            flour = 10,//小麦粉
+    }
 
     public ItemID itemID;
 

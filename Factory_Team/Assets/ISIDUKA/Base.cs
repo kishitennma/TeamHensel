@@ -7,7 +7,7 @@ public class Base : MonoBehaviour
     private Dictionary<Item.ItemID, int> sellPrices =
         new Dictionary<Item.ItemID, int>()
     {
-        { Item.ItemID.wheat, 3 },     //小麦
+        { Item.ItemID.Wheat, 3 },     //小麦
         { Item.ItemID.Choco, 3 },     //チョコ
         { Item.ItemID.Cake, 20 },     //ケーキ
         { Item.ItemID.Braed, 20 },     //パン

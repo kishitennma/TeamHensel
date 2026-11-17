@@ -109,54 +109,82 @@ public class MaterialProcessing : MonoBehaviour
         }
 
         Debug.Log($"ƒŒƒVƒs“Ç‚İ‚İŠ®—¹: {recipes.Count}Œ");
+
+        Debug.Log(
+    "y“Ç‚İ‚İ‘¤zInstanceIDF" + GetInstanceID()
+);
+        foreach (var recipe in recipes)
+        {
+            Debug.Log("“o˜^‚³‚ê‚½ƒŒƒVƒsIDF" + recipe.Key);
+        }
     }
 
     //‘fŞID‚©‚çƒŒƒVƒs‚ğæ“¾‚·‚é
+    //public bool TryGetRecipe(
+    //    string inputMaterialId,
+    //    out MaterialRecipe recipe)
+    //{
+    //    return recipes.TryGetValue(inputMaterialId, out recipe);
+    //}
+
+    //public bool TryConvert(
+    //   string inputMaterialId,
+    //   int inputCount,
+    //   out string outputMaterialId,
+    //   out int outputCount,
+    //   out int remainder)
+    //{
+    //    //‰Šú‰»
+    //    outputMaterialId = null;
+    //    outputCount = 0;
+    //    remainder = inputCount;
+
+    //    //‘fŞID‚ª‹óA0‚Ìê‡‚Í‰ÁH‚µ‚È‚¢
+    //    if (string.IsNullOrEmpty(inputMaterialId) ||
+    //        inputCount <= 0)
+    //    {
+    //        return false;
+    //    }
+
+    //    //‘fŞ–¼‚©‚ç‘Î‰‚·‚éƒŒƒVƒs‚ğŒŸõ
+    //    if (!recipes.TryGetValue(
+    //            inputMaterialId, out MaterialRecipe recipe))
+    //    {
+    //        return false;
+    //    }
+
+    //    int batches = inputCount / recipe.InputAmount;//batch:‰ÁH‚Å‚«‚é‰ñ”
+
+    //    //‰ÁH‚ª‰Â”\‚©‚ÌŠm”F
+    //    if (batches <= 0)
+    //    {
+    //        return false;
+    //    }
+
+    //    outputMaterialId = recipe.OutputMaterialID;//o—Í‘fŞ‚ÌID
+    //    outputCount = batches * recipe.OutputAmount;//•ÏŠ·”~ˆê‰ñ‚Ì¶Y—Ê
+    //    remainder = inputCount % recipe.InputAmount;//—]‚è
+
+    //    return true;
+    //}
     public bool TryGetRecipe(
-        string inputMaterialId,
-        out MaterialRecipe recipe)
+    string inputMaterialId,
+    out MaterialRecipe recipe)
     {
-        return recipes.TryGetValue(inputMaterialId, out recipe);
-    }
+        Debug.Log("===== ƒŒƒVƒsŒŸõ =====");
+        Debug.Log("InstanceIDF" + GetInstanceID());
+        Debug.Log("ŒŸõIDF" + inputMaterialId);
+        Debug.Log("“o˜^Œ”F" + recipes.Count);
 
-    public bool TryConvert(
-       string inputMaterialId,
-       int inputCount,
-       out string outputMaterialId,
-       out int outputCount,
-       out int remainder)
-    {
-        //‰Šú‰»
-        outputMaterialId = null;
-        outputCount = 0;
-        remainder = inputCount;
-
-        //‘fŞID‚ª‹óA0‚Ìê‡‚Í‰ÁH‚µ‚È‚¢
-        if (string.IsNullOrEmpty(inputMaterialId) ||
-            inputCount <= 0)
+        foreach (var r in recipes)
         {
-            return false;
+            Debug.Log("“o˜^IDF" + r.Key);
         }
 
-        //‘fŞ–¼‚©‚ç‘Î‰‚·‚éƒŒƒVƒs‚ğŒŸõ
-        if (!recipes.TryGetValue(
-                inputMaterialId, out MaterialRecipe recipe))
-        {
-            return false;
-        }
+        bool result = recipes.TryGetValue(inputMaterialId, out recipe);
 
-        int batches = inputCount / recipe.InputAmount;//batch:‰ÁH‚Å‚«‚é‰ñ”
+        Debug.Log("ŒŸõŒ‹‰ÊF" + result);
 
-        //‰ÁH‚ª‰Â”\‚©‚ÌŠm”F
-        if (batches <= 0)
-        {
-            return false;
-        }
-
-        outputMaterialId = recipe.OutputMaterialID;//o—Í‘fŞ‚ÌID
-        outputCount = batches * recipe.OutputAmount;//•ÏŠ·”~ˆê‰ñ‚Ì¶Y—Ê
-        remainder = inputCount % recipe.InputAmount;//—]‚è
-
-        return true;
+        return result;
     }
 }

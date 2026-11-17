@@ -1,2 +1,2 @@
-InputMaterialID,OutputMaterialID,InputAmount,OutputAmount
-Wheat,Flour,1,1
+﻿InputMaterialID,OutputMaterialID,InputAmount,OutputAmount
+Wheat,flour,2,1
