@@ -21,7 +21,7 @@ public class F_Machine : Machine_Base
 
         if(input_items.Count == input)
         {
-            //ƒŒƒVƒsŒŸõŠÖ”ŒÄ‚Ño‚µ
+            Recipe_Search(input_items,out output_item.itemID);
         }
 
         return true;
