@@ -138,7 +138,7 @@ public class EXshopGrid : MonoBehaviour
         Machine_Base new_machine_base = GetMachineBase(newMachine);
 
         new_machine_base.Set_GridPos(cellPosition);
-        new_machine_base.SetGridSystem(this);
+        //new_machine_base.SetGridSystem(this);
         // 占有マスと配置位置を登録
         RegisterMachine(newMachine, cellPosition);
         Debug.Log($"{selected_prefab.name}を配置しました: {cellPosition}");
