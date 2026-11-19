@@ -17,6 +17,7 @@ public class Item : MonoBehaviour
             Macaron = 8,//ƒ}ƒJƒƒ“
             Pudding = 9,//ƒvƒŠƒ“
             flour = 10,//¬”•²
+            None = 9999,
     }
 
     public ItemID itemID;
