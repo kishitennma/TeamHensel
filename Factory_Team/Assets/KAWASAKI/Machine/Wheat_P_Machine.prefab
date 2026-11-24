@@ -113,7 +113,6 @@ MonoBehaviour:
   processing_time: 3
   input_capacity: 2
   output_item_prefab: {fileID: 623973014019459660, guid: 2352c5b0a54d873439f698da5ba887d5, type: 3}
-  output_rail: {fileID: 5012591094324337395, guid: 09ef9d3454309774d88fab16984dcdfb, type: 3}
 --- !u!1 &7114312121779286770
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,3 +158,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recipe_csv: {fileID: 4900000, guid: 2ea228555726ffc4187970f890fa98aa, type: 3}
+  item_prefabs:
+  - {fileID: 3394576452183998561, guid: e05dfaf36ba8df746aa5f9146a13b7f7, type: 3}
+  - {fileID: 623973014019459660, guid: 2352c5b0a54d873439f698da5ba887d5, type: 3}

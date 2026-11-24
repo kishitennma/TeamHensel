@@ -24,44 +24,51 @@ public class ProcessingMachine : Machine_Base
     //加工残り時間
     private float processing_timer = 0f;
 
-    //加工後のアイテムPrefab
-    [SerializeField]
-    private Item output_item_prefab;
+    // 加工完了時に使用する完成品Prefab
+    private Item processing_output_prefab;
 
-    private Item waiting_output_item;
+    // 加工完了時に生産する個数
+    private int processing_output_amount;
 
+    // 搬出待ちの完成品
+    private Queue<Item> waiting_output_items = new Queue<Item>();
     private void Update()
     {
-        // 加工中ならタイマーを進める
+        // 加工中のタイマー処理
         if (is_processing)
         {
             processing_timer -= Time.deltaTime;
 
+            // 加工時間が終了した
             if (processing_timer <= 0f)
             {
                 is_processing = false;
 
-                Debug.Log("加工完了！");
+                Debug.Log("加工完了");
 
-                if (output_item_prefab != null)
+                // 完成品を必要数生成する
+                if (processing_output_prefab != null)
                 {
-                    waiting_output_item = Instantiate(
-                        output_item_prefab,
-                        transform.position,
-                        Quaternion.identity
-                    );
+                    for (int i = 0; i < processing_output_amount; i++)
+                    {
+                        Item new_item = Instantiate(
+                            processing_output_prefab,
+                            transform.position,
+                            Quaternion.identity);
 
-                    Debug.Log("完成品を生成しました：" + waiting_output_item.name);
+                        waiting_output_items.Enqueue(new_item);
+                    }
+                    Debug.Log("完成品を生成しました：" + processing_output_amount + "個");
                 }
                 else
                 {
-                    Debug.LogError("完成品Prefabが設定されていません");
+                    Debug.LogError("完成品Prefabが取得できていません");
                 }
             }
         }
 
-        // 完成品があれば、出口のレールへ渡す
-        if (waiting_output_item != null)
+        // 搬出待ちの完成品がある場合
+        if (waiting_output_items.Count > 0)
         {
             Try_Output_Item();
         }
@@ -148,6 +155,30 @@ public class ProcessingMachine : Machine_Base
         if (material_count >= recipe.InputAmount)
         {
             if (is_processing) return;
+            // CSVの出力IDをItemIDに変換
+            if (!System.Enum.TryParse(
+                recipe.OutputMaterialID,
+                out Item.ItemID outputID))
+            {
+                Debug.LogError("出力IDがItemIDに存在しません：" + recipe.OutputMaterialID);
+                return;
+            }
+
+            // 出力IDからPrefabを取得
+            if (!material_processing.TryGetItemPrefab(
+                outputID, out Item prefab))
+            {
+                Debug.LogError("完成品Prefabを取得できません：" + outputID);
+                return;
+            }
+
+            // 加工完了時に使用する情報を保存
+            processing_output_prefab = prefab;
+            processing_output_amount = recipe.OutputAmount;
+
+            Debug.Log("今回の完成品：" + outputID);
+            Debug.Log("今回の生産数：" + processing_output_amount);
+
 
             Debug.Log("レシピの必要素材が揃いました！");
 
@@ -193,7 +224,14 @@ public class ProcessingMachine : Machine_Base
             return;
         }
 
-        // 加工機の出口に隣接するマスを取得
+        if (waiting_output_items.Count == 0)
+        {
+            return;
+        }
+
+        // Queueの先頭アイテムを取得（まだ削除しない）
+        Item item = waiting_output_items.Peek();
+
         List<Vector2Int> check_cells = Output_Get_Check_Cells();
 
         foreach (Vector2Int cellpos in check_cells)
@@ -206,7 +244,6 @@ public class ProcessingMachine : Machine_Base
                 continue;
             }
 
-            // 相手のInputDirと加工機のOutputDirが合っているか確認
             if ((int)next_machine.InputDir != ((int)OutputDir + 2) % 4)
             {
                 continue;
@@ -214,16 +251,17 @@ public class ProcessingMachine : Machine_Base
 
             Debug.Log("出口の機械を発見：" + next_machine.name);
 
-            bool received = next_machine.Recive_Item(waiting_output_item);
+            bool received = next_machine.Recive_Item(item);
 
             if (received)
             {
-                Debug.Log("完成品を出口の機械に渡しました！");
-                waiting_output_item = null;
+                waiting_output_items.Dequeue();
+
+                Debug.Log("完成品を出口に渡しました！");
+                Debug.Log("残りの完成品：" + waiting_output_items.Count + "個");
+
                 return;
             }
-
-            Debug.Log("出口の機械が受け取れませんでした");
         }
     }
 }

@@ -15,7 +15,7 @@ public class MaterialRecipe
 public class MaterialProcessing : MonoBehaviour
 {
     [SerializeField] private TextAsset recipe_csv;
-
+    [SerializeField] private Item[] item_prefabs;
     private readonly Dictionary<string, MaterialRecipe> recipes =
     new Dictionary<string, MaterialRecipe>(
         StringComparer.Ordinal
@@ -120,53 +120,6 @@ public class MaterialProcessing : MonoBehaviour
     }
 
     //‘fŞID‚©‚çƒŒƒVƒs‚ğæ“¾‚·‚é
-    //public bool TryGetRecipe(
-    //    string inputMaterialId,
-    //    out MaterialRecipe recipe)
-    //{
-    //    return recipes.TryGetValue(inputMaterialId, out recipe);
-    //}
-
-    //public bool TryConvert(
-    //   string inputMaterialId,
-    //   int inputCount,
-    //   out string outputMaterialId,
-    //   out int outputCount,
-    //   out int remainder)
-    //{
-    //    //‰Šú‰»
-    //    outputMaterialId = null;
-    //    outputCount = 0;
-    //    remainder = inputCount;
-
-    //    //‘fŞID‚ª‹óA0‚Ìê‡‚Í‰ÁH‚µ‚È‚¢
-    //    if (string.IsNullOrEmpty(inputMaterialId) ||
-    //        inputCount <= 0)
-    //    {
-    //        return false;
-    //    }
-
-    //    //‘fŞ–¼‚©‚ç‘Î‰‚·‚éƒŒƒVƒs‚ğŒŸõ
-    //    if (!recipes.TryGetValue(
-    //            inputMaterialId, out MaterialRecipe recipe))
-    //    {
-    //        return false;
-    //    }
-
-    //    int batches = inputCount / recipe.InputAmount;//batch:‰ÁH‚Å‚«‚é‰ñ”
-
-    //    //‰ÁH‚ª‰Â”\‚©‚ÌŠm”F
-    //    if (batches <= 0)
-    //    {
-    //        return false;
-    //    }
-
-    //    outputMaterialId = recipe.OutputMaterialID;//o—Í‘fŞ‚ÌID
-    //    outputCount = batches * recipe.OutputAmount;//•ÏŠ·”~ˆê‰ñ‚Ì¶Y—Ê
-    //    remainder = inputCount % recipe.InputAmount;//—]‚è
-
-    //    return true;
-    //}
     public bool TryGetRecipe(
     string inputMaterialId,
     out MaterialRecipe recipe)
@@ -187,4 +140,28 @@ public class MaterialProcessing : MonoBehaviour
 
         return result;
     }
+    // ItemID‚©‚ç‘Î‰‚·‚éPrefab‚ğæ“¾‚·‚é
+    public bool TryGetItemPrefab(
+        Item.ItemID itemID,
+        out Item prefab)
+    {
+        prefab = null;
+
+        foreach (Item item in item_prefabs)
+        {
+            if (item == null) continue;
+
+            if (item.GetItemID() == itemID)
+            {
+                prefab = item;
+                return true;
+            }
+        }
+
+        Debug.LogWarning("Prefab‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñF" + itemID);
+        return false;
+    }
+
+
+
 }
