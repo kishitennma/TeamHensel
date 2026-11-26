@@ -7,6 +7,9 @@ public class F_Machine : Machine_Base
     // 合成に使用する素材
     private List<Item> input_items = new List<Item>();
 
+    //レシピ管理クラス
+    [SerializeField] private MixerRecipe mixer_recipe;
+
     // 最大受け取り数
     [SerializeField] private int input_capacity = 2;
 
@@ -122,11 +125,21 @@ public class F_Machine : Machine_Base
      Item.ItemID id2,
      out Item.ItemID result_id)
     {
-        // Wheat + Flour
-        if ((id1 == Item.ItemID.Wheat && id2 == Item.ItemID.flour) ||
-            (id1 == Item.ItemID.flour && id2 == Item.ItemID.Wheat))
+        // Managerが設定されているか確認
+        if (mixer_recipe == null)
         {
-            result_id = Item.ItemID.Braed;
+            Debug.LogError("MixerRecipeが設定されていません！");
+            result_id = Item.ItemID.None;
+            return false;
+        }
+
+        // レシピ検索をManagerに任せる
+        if (mixer_recipe.TryGetRecipe(
+            id1,
+            id2,
+            out CraftRecipe recipe))
+        {
+            result_id = recipe.Output;
             return true;
         }
 

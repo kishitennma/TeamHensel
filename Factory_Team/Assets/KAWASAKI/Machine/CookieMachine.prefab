@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8524396106365709555
+--- !u!1 &85435876039999916
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,84 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3861867850477900010}
-  - component: {fileID: 5047201649828539950}
-  - component: {fileID: 1963580582157772334}
+  - component: {fileID: 6699898054414769285}
+  - component: {fileID: 991054124781262928}
   m_Layer: 0
-  m_Name: Machine1
+  m_Name: Mixer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3861867850477900010
+--- !u!4 &6699898054414769285
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8524396106365709555}
+  m_GameObject: {fileID: 85435876039999916}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.1543314, y: 1.4893831, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+  m_Father: {fileID: 6762759635096022086}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &991054124781262928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85435876039999916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5600d438ed050ba43aecf77357ebf9aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recipe_csv: {fileID: 4900000, guid: 854a527c0cdcd0441bdaadae2553e9a5, type: 3}
+--- !u!1 &4126816330405732602
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6762759635096022086}
+  - component: {fileID: 2721307645746522128}
+  - component: {fileID: 3539833569788019742}
+  m_Layer: 0
+  m_Name: CookieMachine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6762759635096022086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4126816330405732602}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.4473698, y: -1.4150941, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6699898054414769285}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &5047201649828539950
+--- !u!212 &2721307645746522128
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8524396106365709555}
+  m_GameObject: {fileID: 4126816330405732602}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -78,7 +124,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.90713406, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -88,25 +134,29 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1963580582157772334
+--- !u!114 &3539833569788019742
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8524396106365709555}
+  m_GameObject: {fileID: 4126816330405732602}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecda11b61cf2ddd40b19643ae13ab86c, type: 3}
+  m_Script: {fileID: 11500000, guid: 8eabd29b220e6ac4093fb4a36cbe82a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   output: 0
   input: 0
   o_id: 0
   i_id: 0
-  input_dir: 0
+  input_dir: 3
   output_dir: 1
   machine_dir: 1
   size: {x: 1, y: 1}
-  produce_interval: 3
-  item_prefab: {fileID: 3394576452183998561, guid: e05dfaf36ba8df746aa5f9146a13b7f7, type: 3}
+  mixer_recipe: {fileID: 991054124781262928}
+  input_capacity: 2
+  synthesis_time: 3
+  output_item_list:
+  - item_id: 4
+    prefab: {fileID: 1725352362943085440, guid: f09807421ac35f54faded5dc9bbeb9ed, type: 3}
