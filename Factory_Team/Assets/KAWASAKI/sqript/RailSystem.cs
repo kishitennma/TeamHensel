@@ -149,18 +149,13 @@ public class RailSystem : Machine_Base
 
         Debug.Log("次のレールを発見");
 
-        // 入力方向を確認
         Debug.Log("相手のInputDir：" + nextRail.InputDir);
         Debug.Log("こちらのOutputDir：" + OutputDir);
 
-        // 合成機は4方向から受け取り可能
-        if (!(nextRail is F_Machine))
+        if ((int)nextRail.InputDir != ((int)OutputDir + 2) % 4)
         {
-            if ((int)nextRail.InputDir != ((int)OutputDir + 2) % 4)
-            {
-                Debug.Log("レールの向きが合っていません");
-                return;
-            }
+            Debug.Log("レールの向きが合っていません");
+            return;
         }
         bool received = nextRail.Recive_Item(item_carry);
 

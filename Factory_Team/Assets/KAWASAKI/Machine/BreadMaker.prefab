@@ -157,7 +157,7 @@ MonoBehaviour:
   input_dir: 3
   output_dir: 1
   machine_dir: 1
-  size: {x: 1, y: 1}
+  size: {x: 1, y: 2}
   material_processing: {fileID: 3668756710533354649, guid: a3c26e237cc40ff42afac5a03d084ec1, type: 3}
   processing_time: 3
   input_capacity: 2
