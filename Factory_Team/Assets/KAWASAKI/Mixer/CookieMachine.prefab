@@ -73,7 +73,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.4473698, y: -1.4150941, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6699898054414769285}
@@ -153,7 +153,7 @@ MonoBehaviour:
   input_dir: 3
   output_dir: 1
   machine_dir: 1
-  size: {x: 1, y: 1}
+  size: {x: 1, y: 2}
   mixer_recipe: {fileID: 991054124781262928}
   input_capacity: 2
   synthesis_time: 3
